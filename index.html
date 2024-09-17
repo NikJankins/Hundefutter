@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hundefutter Vergleichstest</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        header {
+            background-color: #4CAF50;
+            color: white;
+            text-align: center;
+            padding: 10px 0;
+        }
+        .container {
+            width: 90%;
+            margin: 20px auto;
+        }
+        h2 {
+            color: #333;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            text-align: center;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+        .result {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px;
+            margin-top: 20px;
+        }
+        .select-rasse {
+            margin-bottom: 20px;
+        }
+        select {
+            padding: 10px;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Hundefutter Vergleichstest</h1>
+</header>
+
+<div class="container">
+    <h2>Hundefutter Tabelle</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Marke</th>
+                <th>Protein (%)</th>
+                <th>Fett (%)</th>
+                <th>Preis pro kg (€)</th>
+                <th>Getreidefrei</th>
+                <th>Bio</th>
+                <th>Empfohlene Rassen</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- Daten werden dynamisch eingefügt -->
+        </tbody>
+    </table>
+
+    <h2>Rassespezifische Empfehlungen</h2>
+    <div class="select-rasse">
+        <label for="rassen">Wähle eine Hunderasse:</label>
+        <select id="rassen" onchange="showRecommendation()">
+            <option value="">Bitte auswählen</option>
+            <option value="Deutscher Schäferhund">Deutscher Schäferhund</option>
+            <option value="Labrador Retriever">Labrador Retriever</option>
+            <option value="Chihuahua">Chihuahua</option>
+            <option value="Border Collie">Border Collie</option>
+            <option value="Mischrassen">Mischrassen (weniger aktiv)</option>
+            <option value="Allergiker">Allergiker (z.B. Bulldoggen)</option>
+        </select>
+    </div>
+    <div id="recommendation" class="result">
+        <!-- Rassespezifische Empfehlungen werden hier angezeigt -->
+    </div>
+</div>
+
+<script>
+    // Daten des Hundefutters
+    const futterDaten = [
+        {
+            marke: 'Royal Canin',
+            protein: '28%',
+            fett: '15%',
+            preis: '5.90',
+            getreidefrei: 'Nein',
+            bio: 'Nein',
+            rassen: 'Deutscher Schäferhund, Pudel'
+        },
+        {
+            marke: 'Wolfsblut Wild Duck',
+            protein: '24%',
+            fett: '13%',
+            preis: '8.50',
+            getreidefrei: 'Ja',
+            bio: 'Nein',
+            rassen: 'Labrador, Retriever'
+        },
+        {
+            marke: 'Josera SensiPlus',
+            protein: '26%',
+            fett: '14%',
+            preis: '4.70',
+            getreidefrei: 'Nein',
+            bio: 'Nein',
+            rassen: 'Alle Rassen (besonders sensibel)'
+        },
+        {
+            marke: 'Pedigree Adult',
+            protein: '21%',
+            fett: '12%',
+            preis: '3.20',
+            getreidefrei: 'Nein',
+            bio: 'Nein',
+            rassen: 'Mischrassen, weniger aktive Hunde'
+        },
+        {
+            marke: 'Terra Canis Classic',
+            protein: '10%',
+            fett: '6%',
+            preis: '9.90',
+            getreidefrei: 'Ja',
+            bio: 'Ja',
+            rassen: 'Chihuahua, Shih Tzu'
+        },
+        {
+            marke: 'Rinti Kennerfleisch',
+            protein: '12%',
+            fett: '8%',
+            preis: '4.50',
+            getreidefrei: 'Ja',
+            bio: 'Nein',
+            rassen: 'Spaniel, Dackel'
+        },
+        {
+            marke: 'Orijen Original',
+            protein: '38%',
+            fett: '18%',
+            preis: '12.50',
+            getreidefrei: 'Ja',
+            bio: 'Nein',
+            rassen: 'Alle aktiven und großen Rassen'
+        },
+        {
+            marke: 'Acana Grasslands',
+            protein: '31%',
+            fett: '16%',
+            preis: '10.20',
+            getreidefrei: 'Ja',
+            bio: 'Nein',
+            rassen: 'Border Collie, Australian Shepherd'
+        }
+    ];
+
+    // Füge Daten in die Tabelle ein
+    const tableBody = document.getElementById('table-body');
+    futterDaten.forEach(futter => {
+        const row = `<tr>
+            <td>${futter.marke}</td>
+            <td>${futter.protein}</td>
+            <td>${futter.fett}</td>
+            <td>${futter.preis} €</td>
+            <td>${futter.getreidefrei}</td>
+            <td>${futter.bio}</td>
+            <td>${futter.rassen}</td>
+        </tr>`;
+        tableBody.innerHTML += row;
+    });
+
+    // Rassespezifische Empfehlungen anzeigen
+    const rassenEmpfehlungen = {
+        'Deutscher Schäferhund': 'Empfohlenes Futter: Royal Canin Breed – Speziell für große Rassen, unterstützt Gelenke und Muskeln.',
+        'Labrador Retriever': 'Empfohlenes Futter: Wolfsblut Wild Duck – Getreidefrei, geeignet für empfindliche Hunde.',
+        'Chihuahua': 'Empfohlenes Futter: Terra Canis Classic – Kleinere Futtermengen, biologisch hochwertig.',
+        'Border Collie': 'Empfohlenes Futter: Acana Grasslands – Hoher Protein- und Fettgehalt für aktive Hunde.',
+        'Mischrassen': 'Empfohlenes Futter: Pedigree Adult – Preiswert, ausreichende Nährstoffe für weniger aktive Hunde.',
+        'Allergiker': 'Empfohlenes Futter: Forthglade Grain Free – Hypoallergen, getreidefrei, geeignet für empfindliche Haut.'
+    };
+
+    function showRecommendation() {
+        const selectedRasse = document.getElementById('rassen').value;
+        const recommendationDiv = document.getElementById('recommendation');
+        recommendationDiv.innerHTML = rassenEmpfehlungen[selectedRasse] || 'Bitte wähle eine Hunderasse aus, um die Empfehlung zu sehen.';
+    }
+</script>
+
+</body>
+</html>
